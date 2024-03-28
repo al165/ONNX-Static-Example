@@ -13,6 +13,7 @@ add_executable(
     ONNX_Test 
     onnx_test.cpp 
     model/model.ort.c
+    model/model.onnx.c
 )
 
 target_link_libraries(
@@ -28,4 +29,8 @@ target_include_directories(
     PUBLIC
     ./include
 )
+
+# copy model file to target destination, if not embedding model into header files
+add_custom_command(TARGET ONNX_Test POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/model/model.onnx $<TARGET_FILE_DIR:ONNX_Test>)
 

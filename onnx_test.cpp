@@ -4,8 +4,8 @@
 #include <chrono>
 
 #include "onnxruntime_cxx_api.h"
-#include "./model/model.ort.h"
-
+// #include "./model/model.ort.h"
+#include "./model/model.onnx.h"
 
 int main(int argc, char* argv[])
 {
@@ -28,7 +28,12 @@ int main(int argc, char* argv[])
 
     // load model
     try {
-      mSession = std::make_unique<Ort::Session>(mEnv, (void*) model_ort_start, model_ort_size, sessionOptions);
+        // load the model from header files, so that model.onnx does not need to be bundled together:
+        mSession = std::make_unique<Ort::Session>(mEnv, (void*) model_onnx_start, model_onnx_size, sessionOptions);
+
+        // load model from model file, rather than embedded header files. (Requires ONNX Runtime 1.17+)
+        // mSession = std::make_unique<Ort::Session>(mEnv, "model.onnx", sessionOptions);
+        
     } catch (std::exception& e) {
       printf("Exception: %s\n", e.what());
     }
